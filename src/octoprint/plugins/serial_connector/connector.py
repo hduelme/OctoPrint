@@ -608,6 +608,12 @@ class ConnectedSerialPrinter(ConnectedPrinter, PrinterFilesMixin):
 
         return self._comm.get_remote_name(name)
 
+    def available_file_name(self, path: str, name: str, *args, **kwargs):
+        if not self._comm:
+            raise PrinterFilesUnavailableError("No connection to printer")
+
+        return self._comm.get_remote_name(name, free=True)
+
     # ~~ comm.MachineComPrintCallback implementation
 
     def on_comm_log(self, message):

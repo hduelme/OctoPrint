@@ -1423,6 +1423,9 @@ class FileManager:
     def sanitize_name(self, location, name):
         return self._storage(location).sanitize_name(name)
 
+    def available_name(self, location, path, name):
+        return self._storage(location).available_name(path, name)
+
     def sanitize_path(self, location, path):
         return self._storage(location).sanitize_path(path)
 

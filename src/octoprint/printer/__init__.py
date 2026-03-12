@@ -671,6 +671,28 @@ class PrinterFilesMixin:
     def sanitize_file_name(self, name: str, *args, **kwargs) -> str:
         return name
 
+    def available_file_name(self, path: str, name: str, *args, **kwargs) -> str:
+        from os.path import splitext
+
+        sanitized = self.sanitize_file_name(name)
+        if not self.get_printer_file(f"{path}/{sanitized}"):
+            return sanitized
+
+        suggestion = sanitized
+        counter = 0
+        sanitized_name, ext = splitext(sanitized)
+
+        while self.get_printer_file(f"{path}/{suggestion}"):
+            counter += 1
+            if counter > 100:
+                raise ValueError(
+                    f"Tried 100 options, can't find a free option for {path}/{name}"
+                )
+
+            suggestion = f"{sanitized_name}_{counter}{ext}"
+
+        return suggestion
+
     def get_printer_file_metadata(
         self, path: str, printer_file: PrinterFile = None, *args, **kwargs
     ) -> Optional[MetadataEntry]:

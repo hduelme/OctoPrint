@@ -5,7 +5,6 @@ __copyright__ = "Copyright (C) 2014 The OctoPrint Project - Released under terms
 import datetime
 import hashlib
 import logging
-import os
 import threading
 from collections.abc import Iterable
 from typing import Optional
@@ -282,21 +281,15 @@ def runFilesTest():
         joined = fileManager.join_path(storage, sanitized_path, sanitized_name)
         return sanitized_path, sanitized_name, joined
 
-    def run_sanitize(storage: str, path: str, name: str) -> dict:
-        sanitized_path, sanitized_name, sanitized = sanitize(
-            data["storage"], data["path"], data["filename"]
-        )
+    def run_sanitize(storage: str, path: str, filename: str) -> dict:
+        sanitized_path, sanitized_name, sanitized = sanitize(storage, path, filename)
         return {
             "sanitized": sanitized,
             "sanitized_path": sanitized_path,
             "sanitized_name": sanitized_name,
         }
 
-    def run_exists(storage: str, path: str, name: str) -> dict:
-        storage = data["storage"]
-        path = data["path"]
-        filename = data["filename"]
-
+    def run_exists(storage: str, path: str, filename: str) -> dict:
         sanitized_path, sanitized_name, sanitized = sanitize(storage, path, filename)
         result = {
             "exists": False,
@@ -307,27 +300,14 @@ def runFilesTest():
 
         exists = _getFileDetails(storage, sanitized)
         if exists:
-            suggestion = sanitized_name
-            name, ext = os.path.splitext(sanitized_name)
-            counter = 0
-            while fileManager.file_exists(
-                storage,
-                fileManager.join_path(
-                    storage,
-                    sanitized_path,
-                    suggestion,
-                ),
-            ):
-                counter += 1
-                suggestion = fileManager.sanitize_name(storage, f"{name}_{counter}{ext}")
-            result.update(
-                {
-                    "exists": True,
-                    "suggestion": suggestion,
-                    "size": exists.size,
-                    "date": exists.date,
-                }
-            )
+            result.update({"exists": True, "size": exists.size, "date": exists.date})
+
+            try:
+                suggestion = fileManager.available_name(storage, path, filename)
+                result.update({"suggestion": suggestion})
+            except ValueError:
+                # could not find a suggestion
+                pass
 
         return result
 

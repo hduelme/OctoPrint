@@ -2057,7 +2057,7 @@ $(function () {
             $("span.not_enough_space", self.uploadExistsDialog).toggle(fileSizeTooBig);
             $("input", self.uploadExistsDialog)
                 .val("")
-                .prop("placeholder", response.suggestion);
+                .prop("placeholder", response.suggestion || "");
             $("a.upload-rename", self.uploadExistsDialog)
                 .toggle(!fileSizeTooBig)
                 .prop("disabled", false)
@@ -2065,6 +2065,8 @@ $(function () {
                 .on("click", function () {
                     var newName = $("input", self.uploadExistsDialog).val();
                     if (newName === "") newName = response.suggestion;
+
+                    if (!newName) return;
 
                     OctoPrint.files.exists("local", path, newName).done(function (r) {
                         if (r.exists) {

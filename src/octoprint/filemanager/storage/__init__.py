@@ -654,6 +654,29 @@ class StorageInterface:
         """
         raise NotImplementedError()
 
+    def available_name(self, path, name) -> str:
+        """
+        Returns a sanitized, available name on path.
+        """
+        from os.path import splitext
+
+        sanitized = self.sanitize_name(name)
+        if not self.file_exists(self.join_path(path, sanitized)):
+            return sanitized
+
+        counter = 0
+        prefix, ext = splitext(sanitized)
+        suggestion = sanitized
+
+        while self.file_exists(self.join_path(path, suggestion)):
+            counter += 1
+            if counter > 100:
+                raise ValueError(f"Can't find a free naming suggestion for {path}/{name}")
+
+            suggestion = self.sanitize_name(f"{prefix}_{counter}{ext}")
+
+        return suggestion
+
     def split_path(self, path):
         """
         Split ``path`` into base directory and file name.
