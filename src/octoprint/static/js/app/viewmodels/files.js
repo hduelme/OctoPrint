@@ -250,8 +250,8 @@ $(function () {
             return self.storageCanUpload(storage);
         });
         self.currentStorageCanUpload.subscribe(() => {
-            self.updateButton();
             self.evaluateDropzone();
+            self.updateButton();
         });
         self.currentStorageCanAddFolder = ko.pureComputed(() => {
             const storage = self.currentStorage();
@@ -1965,12 +1965,18 @@ $(function () {
 
         self._setDropzone = (enable) => {
             const button = self.uploadButton();
-            const url = API_BASEURL + "files/" + self.currentStorage();
+            const storage = self.currentStorage();
 
             if (button === undefined) return;
+            if (
+                button.attr("data-storage") == storage &&
+                button.attr("data-dropenabled") == "" + enable
+            )
+                return;
 
+            // TODO: update options instead of re-init
             button.fileupload({
-                url: url,
+                url: API_BASEURL + "files/" + storage,
                 dataType: "json",
                 dropZone: enable ? self.dropZone : null,
                 sequentialUploads: true,
@@ -1984,6 +1990,7 @@ $(function () {
                 stop: self._handleUploadStop,
                 progressall: self._handleUploadProgress
             });
+            button.attr("data-storage", storage).attr("data-dropenabled", "" + enable);
         };
 
         self._dragNDropEnabled = false;
