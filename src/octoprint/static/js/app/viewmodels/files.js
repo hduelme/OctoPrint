@@ -1750,9 +1750,9 @@ $(function () {
                 self.loginState.hasPermission(self.access.permissions.FILES_UPLOAD) &&
                 self.currentStorageCanUpload()
             ) {
-                self.uploadButton.fileupload("enable");
+                self.uploadButton().fileupload("enable");
             } else {
-                self.uploadButton.fileupload("disable");
+                self.uploadButton().fileupload("disable");
             }
         };
 
@@ -1810,7 +1810,11 @@ $(function () {
 
             //~~ Gcode upload
 
-            self.uploadButton = $("#gcode_upload");
+            // Must re-query the DOM element on each call because jQuery File Upload
+            // clones and replaces the file input after every file selection
+            //
+            // See https://github.com/blueimp/jQuery-File-Upload/wiki/Frequently-Asked-Questions#why-is-the-file-input-field-cloned-and-replaced-after-each-selection
+            self.uploadButton = () => $("#gcode_upload");
 
             self.dropOverlay = $("#drop_overlay");
             self.dropZone = $("#drop");
@@ -1961,7 +1965,7 @@ $(function () {
         };
 
         self._setDropzone = (enable) => {
-            const button = self.uploadButton;
+            const button = self.uploadButton();
             const url = API_BASEURL + "files/" + self.currentStorage();
 
             if (button === undefined) return;
