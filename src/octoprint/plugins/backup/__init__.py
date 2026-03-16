@@ -1141,8 +1141,10 @@ class BackupPlugin(
 
                     return final_path
 
-                except Exception:
+                except (Exception, KeyboardInterrupt):
                     backup_error = True
+                    if os.path.exists(temporary_path):
+                        os.remove(temporary_path)
                     raise
                 finally:
                     for plugin, hook in plugin_manager.get_hooks(
