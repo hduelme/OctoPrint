@@ -528,9 +528,6 @@ class BackupPlugin(
                 filename = None
                 datafolder = BackupPlugin._backups_path(settings)
 
-            if not os.path.isdir(datafolder):
-                os.makedirs(datafolder)
-
             def on_backup_start(name, temporary_path, exclude):
                 click.echo(f"Creating backup at {name}, please wait...")
 
@@ -559,8 +556,6 @@ class BackupPlugin(
             plugin_manager = cli_group.plugin_manager
 
             datafolder = BackupPlugin._backups_path(settings)
-            if not os.path.isdir(datafolder):
-                os.makedirs(datafolder)
 
             # register plugin manager plugin setting overlays
             plugin_info = plugin_manager.get_plugin_info("pluginmanager")
@@ -1590,10 +1585,14 @@ class BackupPlugin(
         return self._default_backups_path(self._settings)
 
     @classmethod
-    def _backups_path(cls, settings):
+    def _backups_path(cls, settings, create=True):
         path = settings.get(["path"])
         if path is None:
             path = cls._default_backups_path(settings)
+
+        if not os.path.isdir(path) and create:
+            os.makedirs(path)
+
         return path
 
     @classmethod
