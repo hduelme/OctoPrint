@@ -524,6 +524,8 @@ class BackupPlugin(
 
             if path is not None:
                 datafolder, filename = os.path.split(os.path.abspath(path))
+                if not os.path.isdir(datafolder):
+                    os.makedirs(datafolder)
             else:
                 filename = None
                 datafolder = BackupPlugin._backups_path(settings)
