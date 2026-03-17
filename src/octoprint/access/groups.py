@@ -453,9 +453,14 @@ class FilebasedGroupManager(GroupManager):
             added_permissions = list(set(permissions) - set(group._permissions))
 
             if removed_permissions:
-                self._dirty |= group.remove_permissions_from_group(removed_permissions)
+                self._dirty = (
+                    group.remove_permissions_from_group(removed_permissions)
+                    or self._dirty
+                )
             if added_permissions:
-                self._dirty |= group.add_permissions_to_group(added_permissions)
+                self._dirty = (
+                    group.add_permissions_to_group(added_permissions) or self._dirty
+                )
 
             notifications.append(
                 (
