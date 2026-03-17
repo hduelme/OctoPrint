@@ -651,6 +651,8 @@ class ConnectedSerialPrinter(ConnectedPrinter, PrinterFilesMixin):
         if self._comm is not None:
             error_str = self._comm.getErrorString()
 
+        self.set_state(state, error=error_str)  # this will call the listener
+
         if state in {
             ConnectedPrinterState.CLOSED,
             ConnectedPrinterState.CLOSED_WITH_ERROR,
@@ -662,8 +664,6 @@ class ConnectedSerialPrinter(ConnectedPrinter, PrinterFilesMixin):
             self.error_info = None
 
             super().set_job(None)
-
-        self.set_state(state, error=error_str)  # this will call the listener
 
     def on_comm_error(self, error, reason, consequence=None, faq=None, logs=None):
         self.error_info = ErrorInformation(
