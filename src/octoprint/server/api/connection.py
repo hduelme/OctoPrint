@@ -100,8 +100,8 @@ def connectionState():  # pre 1.12.0
         current=CurrentConnectionState_pre_1_12_0(
             state=state,
             printerProfile=profile.get("id", None) if profile else None,
-            port=connection_state.get("port", ""),
-            baudrate=connection_state.get("baudrate", 0),
+            port=connection_state.get("port", None) or None,
+            baudrate=connection_state.get("baudrate", None) or None,
         ),
         options=_get_options(),
     )
@@ -125,7 +125,7 @@ def connectionState_1_12_0():  # 1.12.0+
             connector=connector,
             parameters=connection_state,
             capabilities=capabilities,
-            profile=profile.get("_id") if profile else None,
+            profile=profile.get("id") if profile else None,
         ),
         options=_get_options_1_12_0(),
     )
@@ -296,8 +296,8 @@ def _get_options() -> ConnectionOptions_pre_1_12_0:  # pre 1.12.0
             for printer_profile in profile_options.values()
             if "id" in printer_profile
         ],
-        portPreference=preferred_connection_params.get("port"),
-        baudratePreference=preferred_connection_params.get("baudrate"),
+        portPreference=preferred_connection_params.get("port") or None,
+        baudratePreference=preferred_connection_params.get("baudrate") or None,
         printerProfilePreference=default_profile["id"]
         if "id" in default_profile
         else None,
