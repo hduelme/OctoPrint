@@ -191,6 +191,7 @@ def getSettings():
             "g90InfluencesExtruder": s.getBoolean(["feature", "g90InfluencesExtruder"]),
             "autoUppercaseBlocklist": s.get(["feature", "autoUppercaseBlocklist"]),
             "enableDragDropUpload": s.getBoolean(["feature", "enableDragDropUpload"]),
+            "notifySuppressedCommands": s.get(["feature", "notifySuppressedCommands"]),
         },
         "gcodeAnalysis": {
             "runAt": s.get(["gcodeAnalysis", "runAt"]),
@@ -767,6 +768,11 @@ def _saveSettings(data):
                 data["feature"]["autoUppercaseBlacklist"],
             )
 
+        if "notifySuppressedCommands" in data["feature"]:
+            value = data["notifySuppressedCommands"]
+            if value in ("info", "warn", "never"):
+                s.set(["feature", "notifySuppressedCommands"], value)
+
         if "enableDragDropUpload" in data["feature"]:
             s.setBoolean(
                 ["feature", "enableDragDropUpload"],
@@ -1145,9 +1151,7 @@ def _get_serial_settings():
         "sanityCheckTools": s.getBoolean(
             ["plugins", "serial_connector", "sanityCheckTools"]
         ),
-        "notifySuppressedCommands": s.get(
-            ["plugins", "serial_connector", "notifySuppressedCommands"]
-        ),
+        "notifySuppressedCommands": s.get(["feature", "notifySuppressedCommands"]),
         "sendM112OnError": s.getBoolean(
             ["plugins", "serial_connector", "sendM112OnError"]
         ),
@@ -1442,7 +1446,7 @@ def _set_serial_settings(data: dict[str, Any]):
     if "notifySuppressedCommands" in data:
         value = data["notifySuppressedCommands"]
         if value in ("info", "warn", "never"):
-            s.set(["plugins", "serial_connector", "notifySuppressedCommands"], value)
+            s.set(["feature", "notifySuppressedCommands"], value)
     if "sendM112OnError" in data:
         s.setBoolean(
             ["plugins", "serial_connector", "sendM112OnError"], data["sendM112OnError"]

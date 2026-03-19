@@ -293,9 +293,6 @@ class SerialConfig(BaseModel):
     sanityCheckTools: bool = True
     """Whether to sanity check the tool count."""
 
-    notifySuppressedCommands: InfoWarnNeverEnum = "warn"
-    """Whether to notify about any suppressed commands."""
-
     capabilities: SerialCapabilities = SerialCapabilities()
 
     resendRatioThreshold: int = 10

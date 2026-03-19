@@ -1237,6 +1237,7 @@ class Settings:
             self._migrate_gcodeviewer_enabled,
             self._migrate_trusted_proxies,
             self._migrate_allowlists_and_blocklists,
+            self._migrate_notify_suppressed_commands,
         )
 
         for migrate in migrators:
@@ -1798,6 +1799,33 @@ class Settings:
             self._logger.info(
                 f"Made a copy of the current config at {backup_path} to allow recovery of allowlist/blocklist configuration"
             )
+
+        return modified
+
+    def _migrate_notify_suppressed_commands(self, config):
+        key = "notifySuppressedCommands"
+
+        modified = False
+
+        value = None
+        if "serial" in config and key in config["serial"]:
+            # pre 1.12.0
+            value = config["serial"].pop(key)
+            modified = True
+
+        elif (
+            "plugins" in config
+            and "serial_connector" in config["plugins"]
+            and key in config["plugins"]["serial_connector"]
+        ):
+            # 1.12.0.dev
+            value = config["plugins"]["serial_connector"].pop(key)
+            modified = True
+
+        if value:
+            if "feature" not in config:
+                config["feature"] = {}
+            config["feature"][key] = value
 
         return modified
 
