@@ -1127,17 +1127,11 @@ def _get_serial_settings():
             ["plugins", "serial_connector", "sdAlwaysAvailable"]
         ),
         "sdLowerCase": s.getBoolean(["plugins", "serial_connector", "sdLowerCase"]),
-        "swallowOkAfterResend": s.getBoolean(
-            ["plugins", "serial_connector", "swallowOkAfterResend"]
-        ),
         "repetierTargetTemp": s.getBoolean(
             ["plugins", "serial_connector", "repetierTargetTemp"]
         ),
         "externalHeatupDetection": s.getBoolean(
             ["plugins", "serial_connector", "externalHeatupDetection"]
-        ),
-        "ignoreIdenticalResends": s.getBoolean(
-            ["plugins", "serial_connector", "ignoreIdenticalResends"]
         ),
         "firmwareDetection": s.getBoolean(
             ["plugins", "serial_connector", "firmwareDetection"]
@@ -1405,11 +1399,6 @@ def _set_serial_settings(data: dict[str, Any]):
         )
     if "sdLowerCase" in data:
         s.setBoolean(["plugins", "serial_connector", "sdLowerCase"], data["sdLowerCase"])
-    if "swallowOkAfterResend" in data:
-        s.setBoolean(
-            ["plugins", "serial_connector", "swallowOkAfterResend"],
-            data["swallowOkAfterResend"],
-        )
     if "repetierTargetTemp" in data:
         s.setBoolean(
             ["plugins", "serial_connector", "repetierTargetTemp"],
@@ -1419,11 +1408,6 @@ def _set_serial_settings(data: dict[str, Any]):
         s.setBoolean(
             ["plugins", "serial_connector", "externalHeatupDetection"],
             data["externalHeatupDetection"],
-        )
-    if "ignoreIdenticalResends" in data:
-        s.setBoolean(
-            ["plugins", "serial_connector", "ignoreIdenticalResends"],
-            data["ignoreIdenticalResends"],
         )
     if "firmwareDetection" in data:
         s.setBoolean(
