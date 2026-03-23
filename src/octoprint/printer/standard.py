@@ -1073,7 +1073,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
     @util.deprecated(
         message="get_sd_files has been deprecated and will be removed in a future version. Please use the PrinterStorage instead.",
         includedoc="Functionality moved to :class:`~octoprint.filemanager.storage.printer.PrinterStorage`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def get_sd_files(self, *args, **kwargs):
         if not self.is_storage_mounted():
@@ -1091,7 +1091,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
     @util.deprecated(
         message="add_sd_file has been deprecated and will be removed in a future version. Please use the PrinterStorage instead.",
         includedoc="Functionality moved to :class:`~octoprint.filemanager.storage.printer.PrinterStorage`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def add_sd_file(
         self, filename, path, on_success=None, on_failure=None, *args, **kwargs
@@ -1168,7 +1168,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
     @util.deprecated(
         message="delete_sd_file has been deprecated and will be removed in a future version. Please use the PrinterStorage instead.",
         includedoc="Functionality moved to :class:`~octoprint.filemanager.storage.printer.PrinterStorage`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def delete_sd_file(self, filename, *args, **kwargs):
         if not self.is_storage_mounted():
@@ -1179,7 +1179,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
     @util.deprecated(
         message="refresh_sd_files has been deprecated and will be removed in a future version. Please use the PrinterStorage instead.",
         includedoc="Functionality moved to :class:`~octoprint.filemanager.storage.printer.PrinterStorage`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def refresh_sd_files(self, blocking=False, *args, **kwargs):
         if not self.is_storage_mounted():

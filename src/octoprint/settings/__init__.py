@@ -1807,7 +1807,7 @@ class Settings:
 
         value = None
         if "serial" in config and key in config["serial"]:
-            # pre 1.12.0
+            # pre 2.0.0
             value = config["serial"].pop(key)
             modified = True
 
@@ -1816,7 +1816,7 @@ class Settings:
             and "serial_connector" in config["plugins"]
             and key in config["plugins"]["serial_connector"]
         ):
-            # 1.12.0.dev
+            # 2.0.0.dev
             value = config["plugins"]["serial_connector"].pop(key)
             modified = True
 

@@ -66,7 +66,7 @@ from . import system as api_system  # noqa: F401,E402
 from . import timelapse as api_timelapse  # noqa: F401,E402
 from . import users as api_users  # noqa: F401,E402
 
-API_VERSION_PRE_1_12 = "0.1"
+API_VERSION_PRE_2_0_0 = "0.1"
 
 api.after_request(noCachingExceptGetResponseHandler)
 
@@ -289,14 +289,14 @@ def wizardFinish():
 def apiVersion():
     return jsonify(
         server=octoprint.server.VERSION,
-        api=API_VERSION_PRE_1_12,
+        api=API_VERSION_PRE_2_0_0,
         text=f"OctoPrint {octoprint.server.DISPLAY_VERSION}",
     )
 
 
-@apiVersion.version(">=1.12.0")
+@apiVersion.version(">=2.0.0")
 @Permissions.STATUS.require(403)
-def apiVersion_post_1_12():
+def apiVersion_post_2_0():
     return jsonify(
         server=octoprint.server.VERSION,
         text=f"OctoPrint {octoprint.server.DISPLAY_VERSION}",

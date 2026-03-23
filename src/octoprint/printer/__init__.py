@@ -838,7 +838,7 @@ class PrinterMixin(CommonPrinterMixin):
     @classmethod
     @deprecated(
         message="get_connection_option has been deprecated and will be removed in a future version. Please use ConnectedPrinter.all() in combination with get_connection_option on the returned ConnectPrinter instances instead.",
-        since="1.12.0",
+        since="2.0.0",
     )
     def get_connection_options(cls, *args, **kwargs):
         from .connection import ConnectedPrinter
@@ -872,7 +872,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="select_file has been deprecated and will be removed in a future version. Please use set_job instead.",
         includedoc="Replaced by :func:`PrinterMixin.set_job`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def select_file(
         self,
@@ -912,7 +912,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="unselect_file has been deprecated and will be removed in a future version. Please use set_job instead.",
         includedoc="Replaced by :func:`PrinterMixin.set_job`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def unselect_file(self, *args, **kwargs):
         """
@@ -923,7 +923,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="fake_ack has been renamed to repair_communication. This compatibility layer will be removed in a future version. Please use repair_communication instead.",
         includedoc="Replaced by :func:`PrinterMixin.repair_communication`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def fake_ack(self, *args, **kwargs):
         self.repair_communication(*args, **kwargs)
@@ -931,7 +931,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="get_transport is non-functional. There is currently no alternative implementation. This compatibility layer will be removed in a future version.",
         includedoc="No longer functional",
-        since="1.12.0",
+        since="2.0.0",
     )
     def get_transport(self, *args, **kwargs):
         """
@@ -947,7 +947,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="get_current_connection has been replaced by connection_state. This compatibility layer will be removed in a future version.",
         includedoc="Only functional if the current connector happens to be the bundled serial connector",
-        since="1.12.0",
+        since="2.0.0",
     )
     def get_current_connection(self, *args, **kwargs):
         """
@@ -971,7 +971,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="is_sd_ready has been deprecated and will be removed in a future version. Please use is_storage_mounted instead.",
         includedoc="Replaced by :func:`PrinterMixin.is_storage_mounted`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def is_sd_ready(self, *args, **kwargs):
         return self.is_storage_mounted()
@@ -979,7 +979,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="init_sd_card has been deprecated and will be removed in a future version. Please use mount_storage instead.",
         includedoc="Replaced by :func:`PrinterMixin.mount_storage`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def init_sd_card(self, *args, **kwargs):
         return self.mount_storage(*args, **kwargs)
@@ -987,7 +987,7 @@ class PrinterMixin(CommonPrinterMixin):
     @deprecated(
         message="release_sd_card has been deprecated and will be removed in a future version. Please use unmount_storage instead.",
         includedoc="Replaced by :func:`PrinterMixin.unmount_storage`",
-        since="1.12.0",
+        since="2.0.0",
     )
     def release_sd_card(self, *args, **kwargs):
         return self.unmount_storage(*args, **kwargs)

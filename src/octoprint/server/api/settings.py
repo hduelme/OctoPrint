@@ -272,7 +272,7 @@ def getSettings():
     if len(plugin_settings):
         data["plugins"] = plugin_settings
 
-    if not api_version_matches(">=1.12.0"):
+    if not api_version_matches(">=2.0.0"):
         data["serial"] = _get_serial_settings()
 
     if Permissions.WEBCAM.can() or (
@@ -752,7 +752,7 @@ def _saveSettings(data):
                 data["feature"]["g90InfluencesExtruder"],
             )
 
-        if api_version_matches(">=1.12.0"):
+        if api_version_matches(">=2.0.0"):
             if "autoUppercaseBlocklist" in data["feature"] and isinstance(
                 data["feature"]["autoUppercaseBlocklist"], (list, tuple)
             ):
@@ -785,7 +785,7 @@ def _saveSettings(data):
         if "bedZ" in data["gcodeAnalysis"]:
             s.setFloat(["gcodeAnalysis", "bedZ"], data["gcodeAnalysis"]["bedZ"])
 
-    if "serial" in data and not api_version_matches(">=1.12.0"):
+    if "serial" in data and not api_version_matches(">=2.0.0"):
         _set_serial_settings(data["serial"])
 
     if "temperature" in data:
@@ -933,7 +933,7 @@ def _saveSettings(data):
                 except ValueError:
                     pass
 
-        if api_version_matches(">=1.12.0"):
+        if api_version_matches(">=2.0.0"):
             if "pluginBlocklist" in data["server"]:
                 processPluginBlocklistSettings("pluginBlocklist")
         elif "pluginBlacklist" in data["server"]:  # legacy
@@ -994,7 +994,7 @@ def _saveSettings(data):
     s.save(trigger_event=True)
 
 
-# pre 1.12.0 settings API still contains serial settings, backwards compatibility layer starts here
+# pre 2.0.0 settings API still contains serial settings, backwards compatibility layer starts here
 
 
 def _get_serial_settings():
