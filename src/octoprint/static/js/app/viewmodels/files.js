@@ -1026,7 +1026,7 @@ $(function () {
         };
         self.initSdCard = function () {
             log.warn(
-                "initSdCard has been deprecated as of OctoPrint 1.12.0, use initPrinterStorage instead"
+                "initSdCard has been deprecated as of OctoPrint 2.0.0, use initPrinterStorage instead"
             );
             self.initPrinterStorage();
         };
@@ -1037,7 +1037,7 @@ $(function () {
         };
         self.releaseSdCard = function () {
             log.warn(
-                "releaseSdCard has been deprecated as of OctoPrint 1.12.0, use releasePrinterStorage instead"
+                "releaseSdCard has been deprecated as of OctoPrint 2.0.0, use releasePrinterStorage instead"
             );
             self.releasePrinterStorage();
         };
@@ -1048,7 +1048,7 @@ $(function () {
         };
         self.refreshSdFiles = function () {
             log.warn(
-                "refreshSdFiles has been deprecated as of OctoPrint 1.12.0, use the printer storage directly instead"
+                "refreshSdFiles has been deprecated as of OctoPrint 2.0.0, use the printer storage directly instead"
             );
             self.refreshPrinterStorage();
         };
