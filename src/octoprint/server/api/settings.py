@@ -274,6 +274,10 @@ def getSettings():
 
     if not api_version_matches(">=2.0.0"):
         data["serial"] = _get_serial_settings()
+        data["feature"]["autoUppercaseBlacklist"] = data["feature"].pop(
+            "autoUppercaseBlocklist"
+        )
+        data["server"]["pluginBlacklist"] = data["server"].pop("pluginBlocklist")
 
     if Permissions.WEBCAM.can() or (
         settings().getBoolean(["server", "firstRun"])
