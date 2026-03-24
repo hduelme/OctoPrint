@@ -27,6 +27,10 @@ from octoprint.server.util.flask import (
 from octoprint.util import count, deserialize, serialize, utmify
 from octoprint.util.text import sanitize
 
+PLACEHOLDER_IMAGE = (
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+)
+
 
 class AnnouncementPlugin(
     octoprint.plugin.AssetPlugin,
@@ -607,7 +611,7 @@ def _lazy_images(text, placeholder=None):
     """
     if placeholder is None:
         # 1px transparent gif
-        placeholder = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        placeholder = PLACEHOLDER_IMAGE
 
     def callback(img_tag):
         match = _image_src_re.search(img_tag)
