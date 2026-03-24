@@ -24,7 +24,7 @@ RSS_EXAMPLE = """<?xml version="1.0" encoding="UTF-8" ?>
 """
 
 
-def test_cache(plugin):
+def test_cache_hit(plugin):
     with TemporaryDirectory() as data_folder:
         plugin._data_folder = data_folder
         with mock.patch("requests.get") as mock_get:
@@ -38,3 +38,19 @@ def test_cache(plugin):
         cache_response = plugin._get_channel_data_from_cache("test", {"ttl": 1000})
 
         assert network_response == cache_response
+
+
+def test_cache_miss(plugin):
+    with TemporaryDirectory() as data_folder:
+        plugin._data_folder = data_folder
+        with mock.patch("requests.get") as mock_get:
+            mock_get.return_value = mock.MagicMock(status_code=200)
+            mock_get.return_value.text = RSS_EXAMPLE
+
+            plugin._get_channel_data_from_network(
+                "test", {"url": "https://example.com/feed.xml"}
+            )
+
+        cache_response = plugin._get_channel_data_from_cache("test", {"ttl": -1000})
+
+        assert cache_response is None
