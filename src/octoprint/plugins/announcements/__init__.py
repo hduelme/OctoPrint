@@ -42,8 +42,18 @@ class AnnouncementPlugin(
 ):
     # noinspection PyMissingConstructor
     def __init__(self):
+        from html_sanitizer.sanitizer import Sanitizer
+
         self._cached_channel_configs = None
         self._cached_channel_configs_mutex = threading.RLock()
+
+        self._html_sanitizer = Sanitizer(
+            settings={
+                "tags": {"strong", "em", "p", "ul", "ol", "li", "br", "img", "a"},
+                "attributes": {"a": {"href"}, "img": {"src"}},
+                "empty": {"br", "img"},
+            }
+        )
 
     # Additional permissions hook
 
@@ -542,14 +552,20 @@ class AnnouncementPlugin(
         if read_until is not None:
             read = published <= read_until
 
+        sanitized_title = self._html_sanitizer.sanitize(entry["title"])
+        sanitized_summary = self._html_sanitizer.sanitize(entry["summary"])
+        sanitized_link = (
+            entry["link"] if not entry["link"].startswith("javascript:") else "#"
+        )
+
         return {
             "title": entry["title"],
-            "title_without_tags": _strip_tags(entry["title"]),
-            "summary": _lazy_images(entry["summary"]),
-            "summary_without_images": _strip_images(entry["summary"]),
+            "title_without_tags": _strip_tags(sanitized_title),
+            "summary": _lazy_images(sanitized_summary),
+            "summary_without_images": _strip_images(sanitized_summary),
             "published": published,
             "link": utmify(
-                entry["link"],
+                sanitized_link,
                 source="octoprint",
                 medium="announcements",
                 content=OCTOPRINT_VERSION,
