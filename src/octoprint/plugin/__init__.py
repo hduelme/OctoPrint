@@ -505,7 +505,7 @@ class PluginSettings:
         """
         if path == ["api", "key"]:
             self._logger.warning(
-                f'DeprecationWarning: Detected access to deprecated settings path ["api", "key"] by plugin {self.plugin_key}. The global api key is deprecated, will be removed in 1.13.0 and should no longer be used. Plugins should instead use OctoPrintPlugin.plugin_apikey.'
+                f'DeprecationWarning: Detected access to deprecated settings path ["api", "key"] by plugin {self.plugin_key}. The global api key is deprecated, will be removed in 2.1.0 and should no longer be used. Plugins should instead use OctoPrintPlugin.plugin_apikey.'
             )
         return self.settings.get(path, **kwargs)
 
@@ -536,7 +536,7 @@ class PluginSettings:
         """
         if path == ["api", "key"]:
             self._logger.warning(
-                f'DeprecationWarning: Detected access to deprecated settings path ["api", "key"] by plugin {self.plugin_key}. The global api key is deprecated, will be removed in 1.13.0 and should no longer be used. Plugins should instead use OctoPrintPlugin.plugin_apikey.'
+                f'DeprecationWarning: Detected access to deprecated settings path ["api", "key"] by plugin {self.plugin_key}. The global api key is deprecated, will be removed in 2.1.0 and should no longer be used. Plugins should instead use OctoPrintPlugin.plugin_apikey.'
             )
         self.settings.set(path, value, **kwargs)
 

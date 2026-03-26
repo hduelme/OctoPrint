@@ -202,7 +202,7 @@ def load_user(userid):
     if userid is None:
         return None
 
-    if userid == "_api":  # TODO Remove in 1.13.0
+    if userid == "_api":  # TODO Remove in 2.1.0
         return userManager.api_user_factory()
 
     if userid == "_internal":
