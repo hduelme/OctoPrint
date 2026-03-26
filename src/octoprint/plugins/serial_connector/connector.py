@@ -168,10 +168,19 @@ class ConnectedSerialPrinter(ConnectedPrinter, PrinterFilesMixin):
     @property
     def communication_health(self) -> CommunicationHealth:
         if self._comm is None:
-            return CommunicationHealth(errors=0, total=0)
+            return CommunicationHealth(errors=0, total=0, critical=False)
+
+        ratio_start = self._plugin_settings.get_int(["resendRatioStart"])
+        ratio_threshold = self._plugin_settings.get_int(["resendRatioThreshold"])
+
+        total = self._comm.transmitted_lines
+        resends = self._comm.received_resends
+        critical = total >= ratio_start and (resends * 100 / total) >= ratio_threshold
 
         return CommunicationHealth(
-            errors=self._comm.received_resends, total=self._comm.transmitted_lines
+            errors=self._comm.received_resends,
+            total=self._comm.transmitted_lines,
+            critical=critical,
         )
 
     def commands(self, *commands, tags=None, force=False, **kwargs):

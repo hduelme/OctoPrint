@@ -56,6 +56,7 @@ if TYPE_CHECKING:
 class CommunicationHealth(BaseModel):
     errors: int
     total: int
+    critical: bool
 
     @computed_field
     @property

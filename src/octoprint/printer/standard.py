@@ -178,7 +178,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
             on_add_log=self._send_add_log_callbacks,
             on_add_message=self._send_add_message_callbacks,
             on_get_progress=self._update_progress_data_callback,
-            on_get_resends=self._update_resend_data_callback,
+            on_get_health=self._update_health_data_callback,
         )
         self._stateMonitor.reset(
             state=self._dict(
@@ -201,7 +201,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
                 printTimeLeftOrigin=None,
             ),
             offsets=self._dict(),
-            resends=self._dict(count=0, ratio=0),
+            health=self._dict(count=0, transmitted=0, ratio=0),
         )
 
         eventManager().subscribe(
@@ -1790,8 +1790,8 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
             printTimeLeftOrigin=printTimeLeftOrigin,
         )
 
-    def _update_resend_data_callback(self):
-        NO_RESULT = self._dict(count=0, transmitted=0, ratio=0)
+    def _update_health_data_callback(self):
+        NO_RESULT = self._dict(count=0, transmitted=0, ratio=0, critical=False)
 
         if self._connection is None:
             return NO_RESULT
@@ -1804,6 +1804,7 @@ class Printer(PrinterMixin, ConnectedPrinterListenerMixin):
             count=communication_health.errors,
             transmitted=communication_health.total,
             ratio=round(communication_health.ratio * 100),
+            critical=communication_health.critical,
         )
 
     def _add_temperature_data(self, temperatures=None):
@@ -1985,31 +1986,35 @@ class StateMonitor:
         on_add_log=None,
         on_add_message=None,
         on_get_progress=None,
-        on_get_resends=None,
+        on_get_health=None,
+        **kwargs,
     ):
+        if on_get_health is None:
+            on_get_health = kwargs.get("on_get_resends")
+
         self._interval = interval
         self._update_callback = on_update
         self._on_add_temperature = on_add_temperature
         self._on_add_log = on_add_log
         self._on_add_message = on_add_message
         self._on_get_progress = on_get_progress
-        self._on_get_resends = on_get_resends
+        self._on_get_health = on_get_health
 
         self._state = None
         self._job_data = None
         self._offsets = {}
         self._progress = None
-        self._resends = None
+        self._health = None
         self._current_z = None
         self._current_t = None
 
         self._progress_dirty = False
-        self._resends_dirty = False
+        self._health_dirty = False
 
         self._change_event = threading.Event()
         self._state_lock = threading.Lock()
         self._progress_lock = threading.Lock()
-        self._resends_lock = threading.Lock()
+        self._health_lock = threading.Lock()
 
         self._last_update = time.monotonic()
         self._worker = threading.Thread(target=self._work)
@@ -2021,10 +2026,10 @@ class StateMonitor:
             return self._on_get_progress()
         return self._progress
 
-    def _get_current_resends(self):
-        if callable(self._on_get_resends):
-            return self._on_get_resends()
-        return self._resends
+    def _get_current_health(self):
+        if callable(self._on_get_health):
+            return self._on_get_health()
+        return self._health
 
     def reset(
         self,
@@ -2032,15 +2037,19 @@ class StateMonitor:
         job_data=None,
         progress=None,
         offsets=None,
-        resends=None,
+        health=None,
         z=None,
         t=None,
+        **kwargs,
     ):
+        if health is None:
+            health = kwargs.get("resends")
+
         self.set_state(state)
         self.set_job_data(job_data)
         self.set_progress(progress)
         self.set_temp_offsets(offsets)
-        self.set_resends(resends)
+        self.set_health(health)
         self.set_current_z(z)
         self.set_current_t(t)
 
@@ -2050,8 +2059,8 @@ class StateMonitor:
 
     def add_log(self, log):
         self._on_add_log(log)
-        with self._resends_lock:
-            self._resends_dirty = True
+        with self._health_lock:
+            self._health_dirty = True
         self._change_event.set()
 
     def add_message(self, message):
@@ -2078,10 +2087,10 @@ class StateMonitor:
             self._progress = progress
             self._change_event.set()
 
-    def set_resends(self, resend_ratio):
-        with self._resends_lock:
-            self._resends_dirty = False
-            self._resends = resend_ratio
+    def set_health(self, health):
+        with self._health_lock:
+            self._health_dirty = False
+            self._health = health
             self._change_event.set()
 
     def set_temp_offsets(self, offsets):
@@ -2129,17 +2138,17 @@ class StateMonitor:
                 self._progress = self._get_current_progress()
                 self._progress_dirty = False
 
-        with self._resends_lock:
-            if self._resends_dirty:
-                self._resends = self._get_current_resends()
-                self._resends_dirty = False
+        with self._health_lock:
+            if self._health_dirty:
+                self._health = self._get_current_health()
+                self._health_dirty = False
 
         return {
             "state": self._state,
             "job": self._job_data,
             "progress": self._progress,
             "offsets": self._offsets,
-            "resends": self._resends,
+            "health": self._health,
             "currentZ": self._current_z,
             "currentTool": self._current_t,
         }
