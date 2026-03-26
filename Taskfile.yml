@@ -66,6 +66,19 @@ tasks:
         cd tests/playwright
         npx playwright install
 
+  test-qunit:
+    desc: Runs QUnit tests via puppeteer
+    cmds:
+      - |
+        cd tests/static/js
+        npx node-qunit-puppeteer test-helpers.html
+        npx node-qunit-puppeteer test-client-base.html
+
+  test-qunit-install:
+    desc: Install QUnit test dependencies
+    cmds:
+      - npx puppeteer install chrome
+
   ### Build related
 
   build:
