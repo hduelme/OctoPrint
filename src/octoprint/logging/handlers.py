@@ -80,7 +80,7 @@ class TriggeredRolloverLogHandler(
         self.cleanupFiles()
 
     def shouldRollover(self, record):
-        return self.do_rollover
+        return type(self).do_rollover
 
     def getFilesToDelete(self):
         """
@@ -109,7 +109,7 @@ class TriggeredRolloverLogHandler(
                 os.remove(path)
 
     def doRollover(self):
-        self.do_rollover = False
+        type(self).do_rollover = False
 
         if self.stream:
             self.stream.close()
